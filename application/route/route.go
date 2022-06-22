@@ -10,9 +10,9 @@ import (
 )
 
 type Route struct {
-	ID        string
-	ClientID  string
-	Positions []Position
+	ID        string     `json:"routeId"`
+	ClientID  string     `json:"clientId"`
+	Positions []Position `json:"positions"`
 }
 
 type PartialRoutePosition struct {
@@ -23,8 +23,8 @@ type PartialRoutePosition struct {
 }
 
 type Position struct {
-	Lat   float64
-	Longi float64
+	Lat   float64 `json:"latitude"`
+	Longi float64 `json:"longitude"`
 }
 
 func (r *Route) LoadPositions() error {
