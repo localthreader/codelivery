@@ -1,13 +1,29 @@
 package main
 
 import (
-	"github.com/localthreader/codelivery/application/route"
+	"fmt"
+	ckafka "github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/joho/godotenv"
+	kafka2 "github.com/localthreader/codelivery/application/kafka"
+	"github.com/localthreader/codelivery/infra/kafka"
+	"log"
 )
 
-func main() {
-	route := route.Route{
-		ID:       "1",
-		ClientID: "1",
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("error while loading .env file")
 	}
-	route.LoadPositions()
+
+}
+
+func main() {
+	consumerChannel := make(chan *ckafka.Message)
+	consumer := kafka.NewConsumer(consumerChannel)
+	go consumer.Consume()
+
+	for msg := range consumerChannel {
+		fmt.Println(string(msg.Value))
+		go kafka2.Produce(msg)
+	}
 }
